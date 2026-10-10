@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "sourceRepository": "https://github.com/mazebench-temp/MazeBenchEngineUnitTest.git",
-  "sourceCommit": "f0b78a3d879671198b17fa25d72e8d32587593b7",
-  "sourceTree": "142d62f0aa151760f0040f7707cf91083de18d3b",
+  "sourceCommit": "ec38d49c4109b628891b2edc60c1688f3680cb64",
+  "sourceTree": "e8df1a17782686970405667d3214f2137ac6dfe9",
   "abiVersion": 4,
   "voxelStride": 5,
   "wasm": {
     "sourcePath": "apps/web/public/physics/voxel_physics.wasm",
-    "sha256": "54f3fd39272df38e5cbf82ce8ab6b2ec539c7519f71362a86c178449a5c419cf",
-    "bytes": 518912
+    "sha256": "b73f17b09be7d18ea2b9442b3fca7134fec7eda95439191c9386e86536fd445d",
+    "bytes": 520655
   },
   "files": [
     {
@@ -54,7 +54,7 @@
     {
       "mode": "100644",
       "path": "README.md",
-      "sha256": "05d553413aee81d10e670db3f7e5c6bd51cd486def39c6f7cf9caaa7cf5ea72a"
+      "sha256": "cc58db3f727dd14fbcea2b4de8ee1a3da5b82786978b2a94c51f413dfab2fd60"
     },
     {
       "mode": "100644",
@@ -144,12 +144,12 @@
     {
       "mode": "100644",
       "path": "src/physics/slope_motion.inc",
-      "sha256": "1fe7433de027b84b7a5943cf496e054b424d0cb0d5fa6c5dbf1d509dbf52838c"
+      "sha256": "1940cbd94efefd1a45d3388e7a525da62a45db6dbdbcaf7446e2f9734e4d6213"
     },
     {
       "mode": "100644",
       "path": "src/physics/slope_proposals.inc",
-      "sha256": "7ac71f8a59f3ce47949e2b670786e64bda1921965e57bc5ca816c40c9237f5bb"
+      "sha256": "b3082e8397eb83bac43fbd30ca3da6a548d8aabc775b0da6c5fb398f846e49c9"
     },
     {
       "mode": "100644",
@@ -184,7 +184,7 @@
     {
       "mode": "100644",
       "path": "tests/clone-stack.test.mjs",
-      "sha256": "2a9e1be8c95fb927f44dfbc09e99b8a01373e974f9d79e472cf9761b0fd398f2"
+      "sha256": "b5f890a6c5a6a05ba987260ae42f454e88205566337a3b07a330ffe0a19a3de0"
     },
     {
       "mode": "100644",
@@ -259,7 +259,7 @@
     {
       "mode": "100644",
       "path": "tests/physics_tests.cpp",
-      "sha256": "77e00b9034b3f82204eb46ff2fd76125af7da7221f9060b3ddc685e911601ec7"
+      "sha256": "21b32ec45f5549700ff5be871560da94a979d7163de5c1c53a946541ea121913"
     },
     {
       "mode": "100644",
