@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "sourceRepository": "https://github.com/mazebench-temp/MazeBenchEngineUnitTest.git",
-  "sourceCommit": "6edf38d73e2a438d4227fbb5d28bc7f08ca50969",
-  "sourceTree": "bb63af3378bee271212a1223215202be9cb06fa7",
+  "sourceCommit": "3a64ac24bbcf34c7a7f1655e02605e629ddd4cec",
+  "sourceTree": "03ccdab4af32a6d142ca05f6f32cb99cfc02cb82",
   "abiVersion": 4,
   "voxelStride": 5,
   "wasm": {
     "sourcePath": "apps/web/public/physics/voxel_physics.wasm",
-    "sha256": "bd07f16ee3324657d49ae494326839ffd04e61d42ae8be74673c6dd3dee587ea",
-    "bytes": 512251
+    "sha256": "fa37bc7306c2e83833df828db4445861a07438e63697079611404ad17f988561",
+    "bytes": 511888
   },
   "files": [
     {
@@ -54,7 +54,7 @@
     {
       "mode": "100644",
       "path": "README.md",
-      "sha256": "5b5ab6dd30ff8dadcd63e5a62cafc3501cf981fd946ba90e1fa69a7337011872"
+      "sha256": "8d2479f198e8c51f9da246d1f649a4fe3e21cab9ab8c8acfba6a4aedfba12bee"
     },
     {
       "mode": "100644",
@@ -64,7 +64,7 @@
     {
       "mode": "100644",
       "path": "src/physics/command_state.inc",
-      "sha256": "6621a32753e8d2aa687daa9670610616e814ffaca4bd22304e50dfb62dfa5bee"
+      "sha256": "d1d86256b5e0c6ddae45c5820ce8ed52e95e630ad722c119a533cb9abc663be1"
     },
     {
       "mode": "100644",
@@ -154,7 +154,7 @@
     {
       "mode": "100644",
       "path": "src/physics/tick.inc",
-      "sha256": "4c2438fd624d38080599e7340b1ffed55472e838fda4d095ba85e87bf2ac2763"
+      "sha256": "ad42682a3eb33f6137bf6fa866971512a80438b013f07d33585415c8d126aded"
     },
     {
       "mode": "100644",
@@ -229,7 +229,7 @@
     {
       "mode": "100644",
       "path": "tests/helpers/sloped-entity-fixtures.mjs",
-      "sha256": "1dbadfa2583b4abe0cca5e5d05167abb0df69a5c436db8934077a2d89ce65591"
+      "sha256": "0dedbac54741836f980a085863db31e85deb4933153a351b48d6afc31aa902bb"
     },
     {
       "mode": "100644",
@@ -259,7 +259,7 @@
     {
       "mode": "100644",
       "path": "tests/physics_tests.cpp",
-      "sha256": "10d1a5e2596165706ef495a962c52d2572d5ef89ed4ab6921a864c1a6845fbbf"
+      "sha256": "8025491888f53fe2e0bf387de2115ac1c56e5ce380786e465e285d67f53eda40"
     },
     {
       "mode": "100644",
