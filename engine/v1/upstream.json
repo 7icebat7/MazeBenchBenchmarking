@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "sourceRepository": "https://github.com/mazebench-temp/MazeBenchEngineUnitTest.git",
-  "sourceCommit": "7e9771ffc226e11f89e017de1b4db875a09d8113",
-  "sourceTree": "00d26c9c1d27c21628c1ec2df93ee43cd01b6cd6",
+  "sourceCommit": "49c15801d749f041b6c585bbbc892b634ac1224b",
+  "sourceTree": "c29071d0cac3e66802dfa8e207233e1bd87a3109",
   "abiVersion": 4,
   "voxelStride": 5,
   "wasm": {
     "sourcePath": "apps/web/public/physics/voxel_physics.wasm",
-    "sha256": "128dfb965c7f7df515106d8256c2a4de92f903553d9dbd3bd590864df2e93207",
-    "bytes": 540948
+    "sha256": "ad751e4c750a6821d5950b4b42131906c2a500a6e19924da282ce1c404e5f1dd",
+    "bytes": 542415
   },
   "files": [
     {
@@ -54,7 +54,7 @@
     {
       "mode": "100644",
       "path": "README.md",
-      "sha256": "6cfff56fc14fdd7709d0c05ae9c12e8047925bd56f1eedf7e7bb87c0bd36648a"
+      "sha256": "30d2e9521b8fdd21bf39b778d35abac76e3306909fb64cbd614e3343ac2525ea"
     },
     {
       "mode": "100644",
@@ -159,7 +159,7 @@
     {
       "mode": "100644",
       "path": "src/physics/tick.inc",
-      "sha256": "704c9699f885d2ef355ac6b6ab82d99725f3d05f8e8bdbdebccff4cbf1e4b182"
+      "sha256": "8e19f67236c3cf1a1a285d817539684d06e2b34ff398356194802926b64ab3ac"
     },
     {
       "mode": "100644",
@@ -218,6 +218,11 @@
     },
     {
       "mode": "100644",
+      "path": "tests/fixtures/pxp-supported-clone-component.json",
+      "sha256": "817ad5d4603fb222e2f4ace9dfcbe050491552b2fd2718e17f58c1b06a4dc1d2"
+    },
+    {
+      "mode": "100644",
       "path": "tests/floating-floor-slopes.test.mjs",
       "sha256": "263e4d40c4f3835705aab080419e501b3385c10288d21ce4e07859cd16e44ba9"
     },
@@ -258,6 +263,11 @@
     },
     {
       "mode": "100644",
+      "path": "tests/helpers/supported-clone-component-fixtures.mjs",
+      "sha256": "a9bc371b2cf11f8c17ca43cd8fb52b9f7caad864b2e9f6ec617af024c5e3f963"
+    },
+    {
+      "mode": "100644",
       "path": "tests/helpers/wrapping-clone-push-fixtures.mjs",
       "sha256": "421b8571b56825555a8f48439fd1772c4374fb8f396eedb27efeebf2909e0620"
     },
@@ -289,7 +299,7 @@
     {
       "mode": "100644",
       "path": "tests/physics_tests.cpp",
-      "sha256": "4a1aab4eafd5acc135157368629b0c4b1b884b77f2b300034c8a3b435b3c217d"
+      "sha256": "e84bdd81019f17b455a720b8e26c0ff7e3cd57b972ac16644c050912d60bd6d9"
     },
     {
       "mode": "100644",
@@ -350,6 +360,11 @@
       "mode": "100644",
       "path": "tests/stack-carry.test.mjs",
       "sha256": "700cdc03c420fe79ae3f0d2632a2f83fc48d267a74e3800934f8f3849443708f"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/supported-clone-component.test.mjs",
+      "sha256": "0e0cd720267fd4e84e5d353d93168f066476401bc85bbd4a241d18d86d0f78be"
     },
     {
       "mode": "100644",
