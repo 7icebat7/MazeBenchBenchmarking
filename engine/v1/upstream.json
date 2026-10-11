@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "sourceRepository": "https://github.com/mazebench-temp/MazeBenchEngineUnitTest.git",
-  "sourceCommit": "7307e16275b6151d5b5e486257ca63f30b7a532d",
-  "sourceTree": "e679bf8bf17c39e5e0cd806100bbd61df94fb6e6",
+  "sourceCommit": "7e9771ffc226e11f89e017de1b4db875a09d8113",
+  "sourceTree": "00d26c9c1d27c21628c1ec2df93ee43cd01b6cd6",
   "abiVersion": 4,
   "voxelStride": 5,
   "wasm": {
     "sourcePath": "apps/web/public/physics/voxel_physics.wasm",
-    "sha256": "170f98b47e656a71e46126129005f00ce1c3c24423793f9b362804202b62ebe1",
-    "bytes": 540930
+    "sha256": "128dfb965c7f7df515106d8256c2a4de92f903553d9dbd3bd590864df2e93207",
+    "bytes": 540948
   },
   "files": [
     {
@@ -54,7 +54,7 @@
     {
       "mode": "100644",
       "path": "README.md",
-      "sha256": "914b6c1778bb55afd26c1b80320598715f02ff2d21ca46039a9f00650b3e9139"
+      "sha256": "6cfff56fc14fdd7709d0c05ae9c12e8047925bd56f1eedf7e7bb87c0bd36648a"
     },
     {
       "mode": "100644",
@@ -159,7 +159,7 @@
     {
       "mode": "100644",
       "path": "src/physics/tick.inc",
-      "sha256": "0f5242f30fcf49ba4461a5c29b82d6e6934411807d718219b7a63bb06e2eb938"
+      "sha256": "704c9699f885d2ef355ac6b6ab82d99725f3d05f8e8bdbdebccff4cbf1e4b182"
     },
     {
       "mode": "100644",
@@ -188,13 +188,18 @@
     },
     {
       "mode": "100644",
+      "path": "tests/clone-chain-vacancy.test.mjs",
+      "sha256": "791050676203ad521af6f9f5b1e8c8de9db33bdc5f8cb03610ccba83d7b632f0"
+    },
+    {
+      "mode": "100644",
       "path": "tests/clone-lifts.test.mjs",
       "sha256": "1f7693fd754fbf933e9853187c16f37b3c852101eff7cf69444fff694aef202c"
     },
     {
       "mode": "100644",
       "path": "tests/clone-stack.test.mjs",
-      "sha256": "508436ea01f7ed87f33a2035089378144f0b8b2ab1ea846ff1fc84cd2bb1e3b2"
+      "sha256": "aa5baeccba73d2f1b3ef3f715c88a61887aab49487f7bc50b24dbbe1aa96182f"
     },
     {
       "mode": "100644",
@@ -220,6 +225,11 @@
       "mode": "100644",
       "path": "tests/gate-blockers.test.mjs",
       "sha256": "496183362edfa91337cd43bd788090d0b1be5ed34f3aef474483b361ca04170a"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/helpers/clone-chain-vacancy-fixtures.mjs",
+      "sha256": "96d8d74989cdc4785d5995f590765796968b4c3aa6015d4efab516463f64c2b5"
     },
     {
       "mode": "100644",
@@ -279,7 +289,7 @@
     {
       "mode": "100644",
       "path": "tests/physics_tests.cpp",
-      "sha256": "7b8ba699c71f0ec5c3a42f87188d75206465242a7cdb3782c07ed1b4babdad82"
+      "sha256": "4a1aab4eafd5acc135157368629b0c4b1b884b77f2b300034c8a3b435b3c217d"
     },
     {
       "mode": "100644",
