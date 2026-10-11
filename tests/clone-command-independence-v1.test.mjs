@@ -17,6 +17,8 @@ const directions = ['up', 'right', 'down', 'left'];
 const dx = [0, 1, 0, -1], dy = [-1, 0, 1, 0];
 const pxp = decodeVoxelRoom(JSON.parse(await readFile(
   new URL('./fixtures/pxp-clone-return.json', import.meta.url), 'utf8')));
+const dxp = JSON.parse(await readFile(
+  new URL('./fixtures/dxp-clone-ledge.json', import.meta.url), 'utf8'));
 
 for (const binary of ['engine/v1/voxel_physics.wasm', 'world-solver/v1/editor-solver.wasm',
   'world-solver/v1/random-agent.wasm', 'solutions/v1/solutions-solver.wasm']) {
@@ -81,46 +83,24 @@ for (const binary of ['engine/v1/voxel_physics.wasm', 'world-solver/v1/editor-so
     }
   });
 
-  test(`${binary}: test 687 shoves a ledge-blocked clone and defers its fall`, async () => {
+  test(`${binary}: DxP Left climbs over stationary clones without shoving one off a ledge`, async () => {
     const engine = await instantiateMazeBenchEngineV1(await readFile(new URL(`../${binary}`, import.meta.url)));
-    for (const height of [1, 2]) for (let variant = 0; variant < 4; variant++) {
-      for (const remoteRamp of [false, true]) for (const relabel of [false, true]) {
-        for (let rotation = 0; rotation < 4; rotation++) for (const reversed of [false, true]) {
-          const frontId = relabel ? 71 : 29;
-          const objects = [
-            {x: 0, y: 5, z: 0, blockId: 'player'},
-            {x: 3, y: 2, z: height, blockId: 'clone', genericId: frontId, groupId: frontId}
-          ];
-          if (variant !== 1) objects.push({x: 3, y: 3, z: height, blockId: 'clone',
-            genericId: relabel ? 29 : 71, groupId: relabel ? 29 : 71});
-          // Variant 3 leaves an overhang above the pusher's destination;
-          // the front body's sideways foot supports it without supporting the push.
-          if (variant === 3) objects.push({x: 4, y: 2, z: height, blockId: 'clone',
-            genericId: frontId, groupId: frontId});
-          for (let y = 0; y < 6; y++) for (let x = 0; x < 6; x++) objects.push({x, y, z: 0, blockId: 'floor'});
-          for (let y = 2; y <= 4; y++) for (let z = 0; z < height; z++) {
-            if (variant !== 3 || y !== 2) objects.push({x: 3, y, z, blockId: 'wall'});
-          }
-          if (variant === 3) for (let z = 0; z < height; z++) objects.push({x: 4, y: 2, z, blockId: 'wall'});
-          if (variant === 2) objects.push({x: 3, y: 1, z: height, blockId: 'wall'});
-          if (remoteRamp) objects.push({x: 5, y: 0, z: 0, blockId: 'ramp', orientation: directions[rotation]});
-          for (const object of objects) for (let turn = 0; turn < rotation; turn++) {
-            [object.x, object.y] = [5 - object.y, object.x];
-          }
-          if (reversed) objects.reverse();
-          const result = await engine.simulateCommand({width: 6, height: 6, objects}, directions[rotation], blocks);
-          const context = `height=${height}, variant=${variant}, ramp=${remoteRamp}, relabel=${relabel}, rotation=${rotation}, reversed=${reversed}`;
-          assert.equal(result.cycle, null, context);
-          assert.equal(result.frames.length, variant === 0 ? height + 1 : 1, context);
-          result.frames.forEach((frame, tick) => assert.deepEqual(frame.objects, objects.map(object => {
-            const moving = object.blockId === 'player' || variant === 0 && object.blockId === 'clone';
-            const falling = variant === 0 && object.blockId === 'clone' && object.genericId === frontId;
-            return {...object, x: object.x + (moving ? dx[rotation] : 0),
-              y: object.y + (moving ? dy[rotation] : 0), z: object.z - (falling ? tick : 0)};
-          }), `${context}, tick=${tick + 1}`));
-          assert.deepEqual(result.final.objects, result.frames.at(-1).objects, context);
-        }
-      }
+    for (const throughWorld of [false, true]) for (const reversed of [false, true]) {
+      const objects = structuredClone(dxp.room.objects);
+      if (reversed) objects.reverse();
+      const room = {...dxp.room, objects, fileName: 'dxp.json', columnIndex: 3, rowIndex: 15};
+      const connected = new ConnectedWorldSessionV1(engine, dxp.blocks, [room]);
+      const result = throughWorld ? await connected.simulateCommand(engine.createState(room), room, 'left')
+        : await engine.simulateCommand(room, 'left', dxp.blocks);
+      const context = `world=${throughWorld}, reversed=${reversed}`;
+      assert.equal(result.cycle, null, context);
+      assert.equal(result.frames.length, dxp.playerFrames.length, context);
+      result.frames.forEach((frame, tick) => {
+        const expected = objects.map(object => object.blockId === 'player'
+          ? {...object, ...dxp.playerFrames[tick]} : object);
+        assert.deepEqual((frame.state ?? frame).objects, expected, `${context}, tick=${tick + 1}`);
+      });
+      assert.deepEqual(result.final.objects, (result.frames.at(-1).state ?? result.frames.at(-1)).objects, context);
     }
   });
 }
