@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "sourceRepository": "https://github.com/mazebench-temp/MazeBenchEngineUnitTest.git",
-  "sourceCommit": "58fcb9d4779620276b780d61966668f79cefd73e",
-  "sourceTree": "246e63a571631633884f42e456e5852a0391031d",
+  "sourceCommit": "955a47f72f937cb78a4e29decba59ff24a0f3703",
+  "sourceTree": "bf54583a6950a03933636a7b32ef2cadfd40a2df",
   "abiVersion": 4,
   "voxelStride": 5,
   "wasm": {
     "sourcePath": "apps/web/public/physics/voxel_physics.wasm",
-    "sha256": "61f4ab5d1923a19bd840a30c04a35b73dd065e8936844ecf62c6ce23c084e0f0",
-    "bytes": 521040
+    "sha256": "784100d24ed1400e877da6f85921b8665a63d2756687784e6ec08c7ab48b566f",
+    "bytes": 538635
   },
   "files": [
     {
@@ -44,7 +44,7 @@
     {
       "mode": "100644",
       "path": "include/voxelbench/physics.hpp",
-      "sha256": "e39286721ca74295f66bcec829059ee14c3c7b8308e5152924dd944769fbff87"
+      "sha256": "9f0e5c064c9e6b5c46838bbf3336559e08a4e52795a2bc844af61ada47ed4ca6"
     },
     {
       "mode": "100644",
@@ -54,7 +54,7 @@
     {
       "mode": "100644",
       "path": "README.md",
-      "sha256": "91bc71049fd6cd90ef3b453067b7bf5d3aec1917b87e4d92e4d1f1dff3c9326a"
+      "sha256": "d240817cb9d2472120ba980a71b500f6db1a2d45ed653051c95158ef68e39b72"
     },
     {
       "mode": "100644",
@@ -63,8 +63,13 @@
     },
     {
       "mode": "100644",
+      "path": "src/physics/actor_lifts.inc",
+      "sha256": "2e72c22a9d3b8e9525e1ab96d6aac0b5f6aae8a07d3e81da94836fec63ea1930"
+    },
+    {
+      "mode": "100644",
       "path": "src/physics/command_state.inc",
-      "sha256": "d1d86256b5e0c6ddae45c5820ce8ed52e95e630ad722c119a533cb9abc663be1"
+      "sha256": "e8ac83d12d9c9cac53257a7ca40c615131e04597500ef6176ddcea12ea2e6cd1"
     },
     {
       "mode": "100644",
@@ -74,7 +79,7 @@
     {
       "mode": "100644",
       "path": "src/physics/cycle.inc",
-      "sha256": "e061ca01a5076351b682a9ecbbe32a4d56992383bd33ccdc5b204eeea6fb241f"
+      "sha256": "32bee2e60d8d87f5edf525346c3064d535f276dbf29fb00976ddc2abe25b5a2c"
     },
     {
       "mode": "100644",
@@ -94,7 +99,7 @@
     {
       "mode": "100644",
       "path": "src/physics/lifts.inc",
-      "sha256": "0dd359a5edd36f5b0dace14e8abb7e5b922d12586d6373080699ef9b2e0372b3"
+      "sha256": "88695ceb080b78659a10a7988aeeec51699d9d4bd777b6fa44187b931ade60a6"
     },
     {
       "mode": "100644",
@@ -154,7 +159,7 @@
     {
       "mode": "100644",
       "path": "src/physics/tick.inc",
-      "sha256": "5ddec65013a7f8574256e4f9fac0f52835ef46ceca48219ed0f3bb087e024867"
+      "sha256": "0d374ef867211f87f470870289734f108557cc02f62cc68f2802c2cf7cba97c0"
     },
     {
       "mode": "100644",
@@ -164,7 +169,7 @@
     {
       "mode": "100644",
       "path": "src/physics/workspace.inc",
-      "sha256": "34a90a5b8b86baed04c53dce73a4cd46b0c7ed42288b2f082a18aaeb95ff5f23"
+      "sha256": "ee92fae539a2a002b36959950e73e82a7cf1038fbc3484235f1762a5edd80e46"
     },
     {
       "mode": "100644",
@@ -180,6 +185,11 @@
       "mode": "100644",
       "path": "tests/audit-regressions.test.mjs",
       "sha256": "2e2a905573c978bceb78e9a6599a65d3da155812ab5af12f5121016aa22cf57a"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/clone-lifts.test.mjs",
+      "sha256": "1f7693fd754fbf933e9853187c16f37b3c852101eff7cf69444fff694aef202c"
     },
     {
       "mode": "100644",
@@ -210,6 +220,11 @@
       "mode": "100644",
       "path": "tests/gate-blockers.test.mjs",
       "sha256": "496183362edfa91337cd43bd788090d0b1be5ed34f3aef474483b361ca04170a"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/helpers/clone-lift-fixtures.mjs",
+      "sha256": "554709e3df065a92e8fec2396d37af91a3f17387f6f9c16803219cbd0fabeaba"
     },
     {
       "mode": "100644",
@@ -259,7 +274,7 @@
     {
       "mode": "100644",
       "path": "tests/physics_tests.cpp",
-      "sha256": "544e2505381f774bb713bca6b4125e867459e3297f6373230f11f932be5d1579"
+      "sha256": "8fb5b91d89e4fe9ccedc6668234c9382e3ff345045ff5ac75731a7a405020c0f"
     },
     {
       "mode": "100644",
