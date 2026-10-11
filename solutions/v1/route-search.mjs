@@ -103,7 +103,7 @@ export async function planRoute(model,native,goal,options={}) {
   if(elapsed()>=nativeBudget)limitReason??='time';
   if(elapsed()>=maximumMs)return {...result('limit'),limitReason:'time'};
   // Also cover continuous commands that cross without settling at a boundary.
-  const fallback=await searchRoute(model,goal,{...options,maximumMs:maximumMs-elapsed(),onProgress:p=>options.onProgress?.({...p,expanded:expanded+p.expanded,elapsedMs:elapsed()})});
+  const fallback=await searchRoute(model,goal,{...options,maximumMs:maximumMs-elapsed(),onProgress:p=>options.onProgress?.({...p,expanded:expanded+p.expanded,transitions:transitions+(p.transitions??0),elapsedMs:elapsed()})});
   expanded+=fallback.expanded;transitions+=fallback.transitions??0;
   const status=fallback.status==='exhausted'&&limited?'limit':fallback.status;
   return {...result(status,fallback.actions),fallback:true,...(status==='limit'?{limitReason:limitReason??fallback.limitReason??'time'}:{})};

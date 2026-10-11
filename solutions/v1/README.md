@@ -3,7 +3,12 @@
 Open [Solutions](http://localhost:8080/solutions/v1/) from the main navigation.
 Start the site with `node server.mjs` from the repository root if needed.
 
-- Begin at H×I. Move with the arrow keys or the movement pad.
+- Begin at H×I, or use **Start room** to open a separate solution at another
+  room's authored player position. Switching rooms restores that room's local
+  solution without replacing routes saved under other starting rooms. Reloading
+  opens the last selected starting room. Move
+  with the arrow keys or the movement pad. A solution started outside H×I
+  proves reachability from its chosen room, not from the usual game start.
 - **Undo** (Z or ⌘/Ctrl+Z) removes one move, including moves in generated
   routes and room crossings. It restores the exact board and gem ledger and
   works after reload. It deletes the last command from the active draft or
@@ -16,9 +21,11 @@ Start the site with `node server.mjs` from the repository root if needed.
   its moves. Dragging still controls the camera. **Adjust target** lets you
   refine X/Y/height and search again; an empty height accepts any height.
 - **Search time** beside the search buttons defaults to one minute, with
-  options up to ten minutes for harder puzzles. Cancel stops the search
-  without changing your moves. A time or memory limit is not an unreachable
-  result.
+  options for 30 minutes, one hour, and **No time limit** for harder puzzles.
+  The live status separates board states from attempted command simulations
+  and reports both rates. Cancel stops the search without changing your moves.
+  A time or memory limit is not an unreachable result; the native solver can
+  still exhaust available memory even when there is no time limit.
 - Green on the map means **visited**: a move must finish in that room.
   Sliding or being punched through a room does not visit it or unlock its
   starting position. Unvisited rooms cannot be selected.
@@ -35,31 +42,35 @@ Start the site with `node server.mjs` from the repository root if needed.
   **Saved runs**.
 - **Clear all runs** removes the entire saved collection in one action after
   confirmation: every run, discovered spawn, current draft, and reachability
-  proof. It returns to the authored H×I start, keeps normal room starts, and
+  proof. It returns to the chosen authored start, keeps normal room starts, and
   saves the empty collection so cleared runs stay gone after reload. Clearing
   cannot be undone and never becomes a recorded move.
 - **Setup** beside a saved spawn shows the sequence that recreates it. A setup
   starts at the game start or an authored room start, then stacks the move
   sequences of the preceding spawns. It never teleports to arbitrary coordinates.
 - **Full solution** combines the runs into one replayed command sequence from
-  H×I. Its only commands are `up`, `down`, `left`, `right`, and `room HxI`
+  the chosen starting room. Its only commands are `up`, `down`, `left`, `right`, and `room HxI`
   (substituting the destination label). A room command requires an earlier
   physical visit and uses the authored player start, matching the benchmark.
   Branch changes expand their spawn setup after a room command when needed.
   Gems remain collected across the entire assembled solution. Runs whose
   starting rooms have not been discovered wait until discovery; any runs that
   still cannot be included are listed separately, not reported as solved.
-- **Import JSON** loads a previously exported Solutions JSON when there are no
-  saved runs or unfinished moves. If rooms were edited or the engine was
+- **Import JSON** reads the file's starting room and opens that room's solution
+  automatically, even when another starting room has saved runs. If the target
+  room already has saved moves, review the replacement prompt before importing.
+  Older files without a starting-room field use H×I. If rooms were edited or the engine was
   updated, choose **Import and recheck** to check compatibility by replaying
   the moves with the current engine and rooms. Entrances must still reach
   their saved positions. Gem IDs and
-  progress are rebuilt from that replay. An invalid route leaves the empty
+  progress are rebuilt from that replay. A failed replay leaves the current
   solution unchanged. A different engine version is allowed when the replay
   succeeds. The imported collection saves automatically under the current
   world and future exports record the current engine; the original file
   and saves belonging to older worlds remain intact.
-- Progress is stored in this browser using IndexedDB. **Export routes** saves
+- Progress is stored per starting room in this browser using IndexedDB; the
+  existing H×I storage key remains compatible. **Export routes** names the JSON
+  after its starting room and saves the
   the run collection, spawn setups, existing reachability witnesses, and a
   replay-validated `fullSolution` with commands and reached rooms/gems.
   `fullSolution.complete` means all saved runs were included, not that every

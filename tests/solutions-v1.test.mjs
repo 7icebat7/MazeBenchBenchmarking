@@ -12,8 +12,26 @@ import { DEFAULT_PLAY_FRAME_DELAY_MS } from '../play/v1/play-session.mjs';
 const blocks=[{id:'floor',roleId:'floor',visual:{kind:'floor'}},{id:'wall',roleId:'solid',visual:{kind:'cube'}},{id:'player',roleId:'player',visual:{kind:'cube'}},{id:'gem',roleId:'goal',visual:{kind:'model'}},{id:'block',roleId:'movable',visual:{kind:'cube'}},{id:'ice',roleId:'ice',visual:{kind:'floor'}}];
 function room(fileName,position,columnIndex,objects=[]){return {fileName,position,columnIndex,rowIndex:0,width:4,height:3,objects:[...Array.from({length:12},(_,i)=>({blockId:'floor',x:i%4,y:Math.floor(i/4),z:0})),{blockId:'player',x:1,y:1,z:0},...objects]};}
 function world(){return {rooms:[room('a.json',['H','I'],0,[{blockId:'gem',x:2,y:1,z:0}]),room('b.json',['I','I'],1,[{blockId:'gem',x:2,y:1,z:0}])],blocks,columns:['H','I'],rows:['I'],roomWidth:4,roomHeight:3};}
-async function create(w=world()){const engine=await instantiateMazeBenchEngineV1(await readFile(new URL('../engine/v1/voxel_physics.wasm',import.meta.url)));return new SolutionsModel(engine,w,await worldFingerprint(w));}
+async function create(w=world(),startRoom=null){const engine=await instantiateMazeBenchEngineV1(await readFile(new URL('../engine/v1/voxel_physics.wasm',import.meta.url)));return new SolutionsModel(engine,w,await worldFingerprint(w),startRoom);}
 async function nativeEngine(){return instantiateMazeBenchEngineV1(await readFile(new URL('../solutions/v1/solutions-solver.wasm',import.meta.url)));}
+
+test('a different authored starting room stays the root through save, import, clear, and full solution',async()=>{
+ const m=await create(world(),'b.json');
+ assert.equal(m.snapshot().startRoom,'b.json');assert.deepEqual(m.snapshot().visitedRooms,['b.json']);
+ assert.equal(m.snapshot().room,'b.json');assert.equal(m.snapshot().spots.find(s=>s.id==='start:b.json').accessible,true);
+ await m.move('right');assert.equal(m.snapshot().collectedGems.length,1);
+ const saved=m.save(),restored=await create(world(),'b.json');await restored.restore(saved);
+ assert.deepEqual(restored.save(),saved);
+ assert.equal((await compileFullSolution(restored)).start,'IxI');
+ const imported=await create(world(),'b.json');await imported.importJSON(JSON.stringify(m.export()));
+ assert.deepEqual(imported.snapshot().visitedRooms,['b.json']);
+ assert.equal(imported.snapshot().collectedGems.length,1);
+ assert.match(imported.clearRuns().message,/I×I/);assert.equal(imported.snapshot().startRoom,'b.json');
+ assert.deepEqual(imported.snapshot().visitedRooms,['b.json']);
+ const usual=await create();await assert.rejects(usual.restore(saved),/another room/);
+ await assert.rejects(usual.importJSON(JSON.stringify(m.export())),/another room/);
+ const legacy=usual.save();delete legacy.startRoom;await usual.restore(legacy);
+});
 
 test('Solutions animates every Ice tick across rooms without retaining traces in saved history',async()=>{
  const w=world();w.rooms.push(room('c.json',['J','I'],2));
@@ -174,7 +192,7 @@ test('long native searches still honor the selected duration and cancellation',a
  const timed=await planRoute(m,native,{kind:'gem'},{maximumMs:4000});
  assert.equal(timed.status,'limit');assert.equal(timed.limitReason,'time');assert.equal(chunks,4);
  clock=0;chunks=0;
- const stopped=await planRoute(m,native,{kind:'gem'},{maximumMs:600000,cancelled:()=>cancelled,onProgress:()=>{cancelled=true;}});
+ const stopped=await planRoute(m,native,{kind:'gem'},{maximumMs:Infinity,cancelled:()=>cancelled,onProgress:()=>{cancelled=true;}});
  assert.equal(stopped.status,'cancelled');assert.equal(chunks,1);assert.deepEqual(m.save(),before);
 });
 

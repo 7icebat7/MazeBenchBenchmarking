@@ -32,7 +32,7 @@ class LedgerWorld extends ConnectedWorldSessionV1 {
 }
 
 export class SolutionsModel {
-  constructor(engine, sourceWorld, fingerprint) {
+  constructor(engine, sourceWorld, fingerprint, startRoom=null) {
     this.engine = engine;
     this.fingerprint = fingerprint;
     this.world = { ...sourceWorld, rooms: sourceWorld.rooms.map(room => ({ ...room,
@@ -43,8 +43,8 @@ export class SolutionsModel {
     this.goalIds = new Map(this.world.rooms.map(r => [r.fileName, r.objects.filter(o => this.role(o) === 'goal').map(o => o.solutionObjectId)]));
     this.spots = new Map(); this.spotKeys = new Map(); this.routes = []; this.sequence = 0;
     this.routeChanges = []; this.routeTrace = null; this.progressCache = null;
-    this.root = this.world.rooms.find(r => r.position.join('x') === 'HxI');
-    if (!this.root) throw new Error('The world has no H×I room.');
+    this.root = startRoom ? this.rooms.get(startRoom) : this.world.rooms.find(r => r.position.join('x') === 'HxI');
+    if (!this.root) throw new Error(startRoom ? 'That starting room does not exist.' : 'The world has no H×I room.');
     for (const room of this.world.rooms) {
       const state = engine.createState(room);
       if (!this.player(state)) continue;
@@ -53,7 +53,7 @@ export class SolutionsModel {
       this.spots.set(spot.id, spot); this.spotKeys.set(this.key(spot), spot.id);
     }
     const start = this.spots.get(`start:${this.root.fileName}`);
-    if (!start) throw new Error('H×I needs an authored player start.');
+    if (!start) throw new Error(`Room ${roomLabel(this.root)} needs an authored player start.`);
     this.verifiedRooms = new Set([this.root.fileName]); this.verifiedGems = new Set();
     this.roomProofs = new Map([[this.root.fileName, []]]); this.gemProofs = new Map();
     this.restoreSpot(start.id);
@@ -275,14 +275,16 @@ export class SolutionsModel {
     const deleted=this.routes.length;
     // Replace the whole collection so drafts, spawn setups, proofs and undo
     // history cannot retain any of the cleared moves.
-    Object.assign(this,new SolutionsModel(this.engine,this.world,this.fingerprint));
-    return {snapshot:this.snapshot(),deleted,message:'All runs cleared. Start again in H×I.'};
+    Object.assign(this,new SolutionsModel(this.engine,this.world,this.fingerprint,this.root.fileName));
+    return {snapshot:this.snapshot(),deleted,message:`All runs cleared. Start again in ${roomLabel(this.root)}.`};
   }
   async importJSON(json,progress=()=>{},{allowWorldChange=false,allowEngineChange=false}={}) {
     if(this.routes.length||this.pending.length)throw new Error('Clear all runs before importing a solution.');
     let saved;
     try{saved=JSON.parse(json);}catch{throw new Error('This file is not valid JSON.');}
     if(!saved||saved.format!==FORMAT||!Array.isArray(saved.routes))throw new Error('Choose a MazeBench Solutions JSON file exported from this page.');
+    if((saved.startRoom||this.world.rooms.find(r=>r.position.join('x')==='HxI')?.fileName)!==this.root.fileName)
+      throw new Error('This file starts in another room. Open that starting room before importing it.');
     const engineChanged=Boolean(saved.engine&&saved.engine!==ENGINE_WASM_SHA256);
     const worldChanged=saved.fingerprint!==this.fingerprint;
     if(engineChanged&&!allowEngineChange)throw Object.assign(new Error('The engine has changed since this solution was saved. You can import it and recheck its moves with the current engine.'),{code:'ENGINE_MISMATCH'});
@@ -290,7 +292,7 @@ export class SolutionsModel {
     const changed=worldChanged||engineChanged;
     // Keep only successful actions, with all IDs and progress rebuilt by replay.
     // Unexpected engine errors still leave the current collection untouched.
-    const imported=new SolutionsModel(this.engine,this.world,this.fingerprint);
+    const imported=new SolutionsModel(this.engine,this.world,this.fingerprint,this.root.fileName);
     const warnings=await replaySolutionImport(imported,saved,progress,{directions:DIRECTIONS,rebaseLedger:changed});
     await imported.refreshCurrentGems();
     Object.assign(this,imported);
@@ -298,7 +300,7 @@ export class SolutionsModel {
   }
   snapshot() {
     const source=this.spots.get(this.source),progress=this.collectionProgress();
-    return { room:this.current.room, state:this.current.state, position:this.position(this.current.state), source:this.source, pending:[...this.pending], proven:source.proven,canUndo:this.pending.length>0||Boolean(this.undoRoute()),
+    return { startRoom:this.root.fileName, room:this.current.room, state:this.current.state, position:this.position(this.current.state), source:this.source, pending:[...this.pending], proven:source.proven,canUndo:this.pending.length>0||Boolean(this.undoRoute()),
       pathLength:source.proven ? source.path.length+this.pending.length : null,
       spots:[...this.spots.values()].map(({state,path,setup,...spot})=>{const recipe=this.spawnRecipe(spot.id);return {...spot,accessible:progress.spots.has(spot.id)&&['start','entrance'].includes(spot.kind),position:this.position(state),moves:path?.length??null,setupBase:recipe.base,setupRoom:recipe.room,setupMoves:recipe.actions.length};}),
       routes:this.routes.map(({actions,...route})=>({...route,accessible:progress.runs.has(route.id),moves:actions.length})),
@@ -307,7 +309,7 @@ export class SolutionsModel {
       verifiedRooms:[...this.verifiedRooms], verifiedGems:[...this.verifiedGems],
       roomCount:this.rooms.size, gemCount:[...this.goalIds.values()].reduce((n,ids)=>n+ids.length,0) };
   }
-  save() { return {format:FORMAT, fingerprint:this.fingerprint, routes:this.routes.map(({from,actions,label,start})=>({from,actions:[...actions],label,...(start?{start:clone(start)}:{})})), draft:{from:this.source,actions:[...this.pending],...(this.sourceOptions?{start:clone(this.sourceOptions)}:{})}}; }
+  save() { return {format:FORMAT, fingerprint:this.fingerprint, startRoom:this.root.fileName, routes:this.routes.map(({from,actions,label,start})=>({from,actions:[...actions],label,...(start?{start:clone(start)}:{})})), draft:{from:this.source,actions:[...this.pending],...(this.sourceOptions?{start:clone(this.sourceOptions)}:{})}}; }
   export() { const saved=this.save();return {...saved, engine:ENGINE_WASM_SHA256, exportedAt:new Date().toISOString(),
     routes:saved.routes.map((route,i)=>({...route,to:this.routes[i].to,spawns:clone(this.routes[i].spawns)})),
     spawnSetups:[...this.spots.values()].filter(spot=>['start','entrance'].includes(spot.kind)&&this.canResume(spot.id)).map(spot=>({id:spot.id,room:spot.room,position:this.position(spot.state),setup:this.spawnRecipe(spot.id)})),
@@ -315,6 +317,7 @@ export class SolutionsModel {
     currentPath:this.spots.get(this.source).proven ? [...this.spots.get(this.source).path,...this.pending] : null}; }
   async restore(saved, progress=()=>{},{rebaseLedger=false}={}) {
     if (saved.format!==FORMAT || saved.fingerprint!==this.fingerprint || !Array.isArray(saved.routes)) throw new Error('This solution belongs to a different world or engine.');
+    if ((saved.startRoom||this.world.rooms.find(r=>r.position.join('x')==='HxI')?.fileName)!==this.root.fileName) throw new Error('This solution starts in another room.');
     // Room edits can renumber gem object IDs. Rebuild each reset's ledger from
     // replayed collections instead of reusing IDs from the previous geometry.
     const sourceOptions=start=>rebaseLedger&&start?.collected?{...start,collected:[...this.collectedGems]}:start;

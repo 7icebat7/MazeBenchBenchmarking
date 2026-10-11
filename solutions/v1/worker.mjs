@@ -15,11 +15,18 @@ self.onmessage=({data})=>{
     try {
       let value;const frames=[],capture=frame=>frames.push(frame);
       if(type==='init') {sourceWorld=payload.world;[engine,fingerprint]=await Promise.all([loadMazeBenchEngineV1(),worldFingerprint(sourceWorld)]);model=new SolutionsModel(engine,sourceWorld,fingerprint);value={fingerprint,snapshot:model.snapshot()};}
-      else if(type==='restore') {const restored=new SolutionsModel(engine,sourceWorld,fingerprint);await restored.restore(payload.saved,(done,total)=>progress({restoring:true,done,total}));model=restored;await model.refreshCurrentGems();value={snapshot:model.snapshot()};}
+      else if(type==='restore') {const restored=new SolutionsModel(engine,sourceWorld,fingerprint,payload.saved.startRoom);await restored.restore(payload.saved,(done,total)=>progress({restoring:true,done,total}));model=restored;await model.refreshCurrentGems();value={snapshot:model.snapshot()};}
+      else if(type==='new-solution') {model=new SolutionsModel(engine,sourceWorld,fingerprint,payload.room);value={snapshot:model.snapshot()};}
       else if(type==='move')value={...await model.move(payload.direction,capture),frames};
       else if(type==='undo'){value=await model.undo();await model.refreshCurrentGems();value.snapshot=model.snapshot();}
       else if(type==='clear-runs')value=model.clearRuns();
-      else if(type==='import')value=await model.importJSON(await payload.file.text(),(done,total)=>progress({restoring:true,done,total}),{allowWorldChange:payload.allowWorldChange===true,allowEngineChange:payload.allowEngineChange===true});
+      else if(type==='import'){
+        let saved;
+        try{saved=JSON.parse(payload.json);}catch{throw new Error('This file is not valid JSON.');}
+        const imported=new SolutionsModel(engine,sourceWorld,fingerprint,saved?.startRoom||undefined);
+        value=await imported.importJSON(payload.json,(done,total)=>progress({restoring:true,done,total}),{allowWorldChange:payload.allowWorldChange===true,allowEngineChange:payload.allowEngineChange===true});
+        model=imported;
+      }
       else if(type==='resume')value={snapshot:model.resume(payload.id),message:'Room reset to this spawn. Collected gems stay collected.'};
       else if(type==='search'){
         cancelled=false;
@@ -51,7 +58,7 @@ self.onmessage=({data})=>{
         value=type==='export'?{...model.export(),fullSolution}:fullSolution;
       }
       else throw new Error('Unknown Solutions action.');
-      self.postMessage({id,type:'complete',value,saved:['move','undo','clear-runs','import','resume','search','restore'].includes(type)?model.save():null});
+      self.postMessage({id,type:'complete',value,saved:['move','undo','clear-runs','import','resume','search','restore','new-solution'].includes(type)?model.save():null});
     }catch(error){self.postMessage({id,type:'error',error:error.message||String(error),code:error.code});}
   });
 };
